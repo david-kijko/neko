@@ -10,9 +10,9 @@ const iconButton = cva(
         // the icon alone: the room bar, the chat, the files
         plain: '',
         // the header menu: a 30px box
-        header: 'flex h-7.5 w-7.5 rounded-[3px]',
+        header: 'flex h-7.5 w-7.5 rounded-[3px] max-sm:h-11 max-sm:w-11',
         // the menus over the video: a translucent 30px box
-        video: 'h-7.5 w-7.5 rounded-[5px] bg-white/20 text-white/60',
+        video: 'h-7.5 w-7.5 rounded-[5px] bg-white/20 text-white/60 max-sm:h-11 max-sm:w-11',
       },
     },
     defaultVariants: { variant: 'plain' },

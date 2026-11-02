@@ -7,7 +7,10 @@ export function HandsBrand({ compact = false }: { compact?: boolean }) {
       <img src={logo} alt="Hands" className={cn('shrink-0 object-contain', compact ? 'size-7.5' : 'size-[72px]')} />
       <span
         aria-hidden="true"
-        className={cn('font-brand leading-none text-[#f3eadb]', compact ? 'text-[24px]' : 'text-[32px]')}
+        className={cn(
+          'font-brand leading-none text-[#f3eadb]',
+          compact ? 'text-[24px] max-[360px]:hidden' : 'text-[32px]',
+        )}
       >
         Hands
       </span>
