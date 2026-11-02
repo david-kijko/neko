@@ -167,7 +167,7 @@
     overflow: hidden;
     width: 100vw;
     height: 100vh;
-    min-width: 320px;
+    min-width: 0;
   }
   /* on the body, not html: rem (Tailwind's spacing scale) stays 16px */
   body {
