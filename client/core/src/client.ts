@@ -46,6 +46,7 @@ const defaultSettings = (): Settings => ({
 
 const initialState = (): State => ({
   authenticated: false,
+  authenticating: false,
   connection: { url: location.href, status: 'disconnected' },
   video: { playable: false, playing: false, volume: 1, muted: false, mutedByAutoplay: false },
   control: {
@@ -185,10 +186,15 @@ export class NekoClient {
   }
 
   async authenticate(token = this.state.connection.token) {
-    if (!token && this.opts.autologin) token = localStorage.getItem('neko_session') ?? undefined
-    if (token) this.setToken(token)
-    await this.api.req('GET', '/whoami')
-    this.store.setState({ authenticated: true })
+    this.store.setState({ authenticating: true })
+    try {
+      if (!token && this.opts.autologin) token = localStorage.getItem('neko_session') ?? undefined
+      if (token) this.setToken(token)
+      await this.api.req('GET', '/whoami')
+      this.store.setState({ authenticated: true })
+    } finally {
+      this.store.setState({ authenticating: false })
+    }
   }
 
   async login(username: string, password: string) {

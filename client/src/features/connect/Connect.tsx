@@ -28,9 +28,13 @@ export function Connect() {
   const { t } = useTranslation()
   const neko = useNeko()
   const { client, app } = neko
-  const { status, authenticated } = useStore(
+  const { status, authenticated, authenticating } = useStore(
     client.store,
-    useShallow((s) => ({ status: s.connection.status, authenticated: s.authenticated })),
+    useShallow((s) => ({
+      status: s.connection.status,
+      authenticated: s.authenticated,
+      authenticating: s.authenticating,
+    })),
   )
   const [oauth, setOauth] = useState<{
     enabled?: boolean
@@ -65,11 +69,11 @@ export function Connect() {
     loginOnce(neko, displayname, invite ?? password).finally(settled)
   }
 
-  const connecting = status === 'connecting'
+  const connecting = authenticating || status === 'connecting'
   const passwordLogin = oauth.password_login_enabled !== false
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-background-floating/80" data-testid="connect">
-      <div className="w-[320px] rounded-[5px] bg-background-secondary p-2.5">
+      <div className="w-[320px] max-w-[calc(100%-32px)] rounded-[14px] bg-background-secondary p-2.5">
         <div className="flex w-full items-center justify-center py-2.5">
           <HandsBrand />
         </div>

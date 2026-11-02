@@ -32,7 +32,7 @@ export function Header() {
       ? t(`locks.${r}.${locked ? 'unlock' : 'lock'}`)
       : t(`locks.${r}.${locked ? 'locked' : 'unlocked'}`)
     return (
-      <li className="mr-2.5 inline-block">
+      <li className="mr-2.5 inline-block max-sm:mr-1">
         <IconButton
           variant="header"
           label={tip}
@@ -55,11 +55,11 @@ export function Header() {
         title="Hands"
         target="_blank"
         rel="noreferrer"
-        className="ml-5 flex w-[150px] flex-1 items-center justify-start"
+        className="ml-5 flex min-w-0 flex-1 max-sm:ml-3 items-center justify-start"
       >
         <HandsBrand compact />
       </a>
-      <ul className="mr-2.5 whitespace-nowrap">
+      <ul className="mr-2.5 shrink-0 whitespace-nowrap max-sm:mr-1">
         {lock('control', <MouseIcon className="size-4" />)}
         {lock(
           'login',
@@ -82,7 +82,7 @@ function Toggle({ side, unread }: { side: boolean; unread: number }) {
   const app = useApp()
   const [read, setRead] = useState(unread)
   return (
-    <li className="mr-2.5 inline-block">
+    <li className="mr-2.5 inline-block max-sm:mr-1">
       {!side && read !== unread && (
         <span className="pointer-events-none absolute h-5 w-5 animate-badge rounded-full bg-[red] text-center text-[1.25em] leading-5 font-bold">
           &bull;

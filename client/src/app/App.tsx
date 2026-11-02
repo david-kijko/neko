@@ -56,12 +56,12 @@ export function App() {
       >
         <main
           className={cn(
-            'flex min-w-[360px] max-w-full grow flex-col overflow-auto',
+            'flex min-w-0 max-w-full grow flex-col overflow-auto',
             expanded ? 'tablet:portrait:h-[40vh] tablet:landscape:h-screen' : 'tablet:h-screen',
           )}
         >
           {!videoOnly && (
-            <div className="flex h-menu shrink-0 bg-background-tertiary" data-testid="header">
+            <div className="flex h-menu shrink-0 bg-background-tertiary max-sm:h-12" data-testid="header">
               <Header />
             </div>
           )}

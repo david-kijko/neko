@@ -72,6 +72,7 @@ export interface InitPayload {
 
 export interface State {
   authenticated: boolean
+  authenticating: boolean
   connection: {
     url: string
     token?: string
