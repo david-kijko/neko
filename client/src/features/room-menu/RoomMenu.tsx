@@ -14,7 +14,7 @@ export function RoomMenu() {
   return (
     <ul className="ml-2.5 self-center">
       <li className="mr-2.5 inline-block align-middle">
-        <IconButton label="About n.eko" data-testid="about-open" onClick={() => app.setState({ about: true })}>
+        <IconButton label="About Hands Computer" data-testid="about-open" onClick={() => app.setState({ about: true })}>
           <QuestionIcon className="size-6" />
         </IconButton>
       </li>

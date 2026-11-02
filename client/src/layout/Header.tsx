@@ -11,7 +11,7 @@ import { remember } from '@/state/storage'
 import { IconButton } from '@/components/IconButton'
 import { useSlot } from '@/plugins'
 import { EachHook } from '@/components/EachHook'
-import logo from '@/assets/images/logo.svg'
+import { HandsBrand } from '@/components/HandsBrand'
 
 const zero = () => 0
 
@@ -51,16 +51,13 @@ export function Header() {
   return (
     <div className="flex flex-1 flex-row items-center">
       <a
-        href="https://github.com/m1k1o/neko"
-        title="Github repository"
+        href="https://gethands.nl"
+        title="Hands"
         target="_blank"
         rel="noreferrer"
         className="ml-5 flex w-[150px] flex-1 items-center justify-start"
       >
-        <img src={logo} alt="n.eko" className="mr-2.5 block h-7.5" />
-        <span className="text-[30px] leading-7.5">
-          <b className="font-black">n</b>.eko
-        </span>
+        <HandsBrand compact />
       </a>
       <ul className="mr-2.5 whitespace-nowrap">
         {lock('control', <MouseIcon className="size-4" />)}

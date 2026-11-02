@@ -3,7 +3,16 @@
    (Tailwind's --font-sans). */
 @import 'tailwindcss';
 
+@font-face {
+  font-family: 'Caprasimo';
+  src: url('./assets/fonts/caprasimo-latin.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 @theme {
+  --font-brand: 'Caprasimo', Georgia, serif;
   /* the tokens of src/design/_variables.scss, same values: text-text-normal, bg-background-primary, ... */
   --color-text-normal: #dcddde;
   --color-text-muted: #72767d;

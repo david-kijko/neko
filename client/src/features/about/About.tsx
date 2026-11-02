@@ -3,7 +3,7 @@ import { BookIcon, GithubLogoIcon } from '@phosphor-icons/react'
 import { useApp } from '@/state/provider'
 import { Dialog, DialogPortal, DialogOverlay, DialogContent, DialogTitle } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
-import logo from '@/assets/images/logo.svg'
+import { HandsBrand } from '@/components/HandsBrand'
 
 export function About() {
   const { t } = useTranslation()
@@ -18,15 +18,14 @@ export function About() {
           aria-describedby={undefined}
           data-testid="about"
         >
-          <DialogTitle className="sr-only">About n.eko</DialogTitle>
+          <DialogTitle className="sr-only">About Hands Computer</DialogTitle>
           <div className="px-10 py-7.5 text-center text-interactive-normal">
             <div className="mb-[15px] flex items-center justify-center">
-              <img src={logo} alt="n.eko" className="mr-2.5 h-[70px]" />
-              <span className="text-[30px] leading-14">
-                <b>n</b>.eko
-              </span>
+              <HandsBrand />
             </div>
-            <p className="mb-[15px]">A self hosted virtual browser that runs in docker and uses WebRTC.</p>
+            <p className="mb-[15px]">
+              Your shared Hands desktop. Powered by Neko, open source under the Apache 2.0 license.
+            </p>
             <p className="mb-[15px]">
               <a
                 className="mx-2.5 text-text-link"

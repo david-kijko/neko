@@ -6,7 +6,7 @@ import { useNeko } from '@/state/provider'
 import { useSlot } from '@/plugins'
 import { WebRTCTransport } from '@m1k1o/neko'
 import { cn } from '@/lib/utils'
-import logo from '@/assets/images/logo.svg'
+import { HandsBrand } from '@/components/HandsBrand'
 import { Dialog } from '@/components/Dialog'
 import { Toaster } from '@/components/ui/sonner'
 import { Header } from '@/layout/Header'
@@ -36,10 +36,7 @@ export function App() {
       <div className="absolute inset-0 flex items-center justify-center">
         <div className="w-[320px] rounded-[5px] bg-background-secondary p-2.5">
           <div className="flex w-full items-center justify-center">
-            <img src={logo} alt="n.eko" className="mr-2.5 h-[90px]" />
-            <span className="text-[30px] leading-14">
-              <b className="font-black">n</b>.eko
-            </span>
+            <HandsBrand />
           </div>
           <div className="flex flex-col">
             <span className="block text-center leading-7.5 uppercase">{t('unsupported')}</span>

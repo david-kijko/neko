@@ -8,7 +8,7 @@ import { tell } from '@/state/dialogs'
 import { useNeko } from '@/state/provider'
 import { i18n } from '@/i18n'
 import { Button } from '@/components/ui/button'
-import logo from '@/assets/images/logo.svg'
+import { HandsBrand } from '@/components/HandsBrand'
 
 const input =
   'my-[5px] rounded-[5px] border-0 bg-background-tertiary px-2 py-1.5 leading-5 text-text-normal selection:bg-text-link placeholder:text-[#757575]'
@@ -70,16 +70,13 @@ export function Connect() {
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-background-floating/80" data-testid="connect">
       <div className="w-[320px] rounded-[5px] bg-background-secondary p-2.5">
-        <div className="flex w-full cursor-pointer items-center justify-center">
-          <img src={logo} alt="n.eko" className="mr-2.5 h-[90px]" />
-          <span className="text-[30px] leading-14">
-            <b className="font-black">n</b>.eko
-          </span>
+        <div className="flex w-full items-center justify-center py-2.5">
+          <HandsBrand />
         </div>
         {connecting ? (
           <div className="relative mx-auto h-[90px] w-[90px]">
-            <div className="absolute top-0 left-0 h-full w-full animate-loader rounded-full bg-style-primary opacity-60"></div>
-            <div className="absolute top-0 left-0 h-full w-full animate-loader rounded-full bg-style-primary opacity-60 [animation-delay:-1s]"></div>
+            <div className="absolute top-0 left-0 h-full w-full animate-loader rounded-full bg-[#ff5000] opacity-60"></div>
+            <div className="absolute top-0 left-0 h-full w-full animate-loader rounded-full bg-[#ff5000] opacity-60 [animation-delay:-1s]"></div>
           </div>
         ) : authenticated ? (
           // logged in but disconnected (network drop, server restart)
