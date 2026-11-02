@@ -547,11 +547,17 @@ test('login, authenticate, logout: the token and the session', async () => {
 
 test('authenticate: resumes the saved session, or fails with the ApiError', async () => {
   const { client } = setup({ autologin: true, autoconnect: true })
+  const idleStates: boolean[] = []
+  const unsubscribe = client.store.subscribe((s) => {
+    if (s.authenticated) idleStates.push(!s.authenticating && s.connection.status === 'disconnected')
+  })
   storage.set('neko_session', 'saved')
   client.setUrl('http://neko.test/some/path/')
   assert.equal(client.state.authenticating, true, 'session restoration is pending before the first render')
   await settle()
   assert.equal(client.state.authenticating, false)
+  unsubscribe()
+  assert.equal(idleStates.includes(true), false, 'no disconnected form between authentication and autoconnect')
   assert.equal(fetches[0].url, 'http://neko.test/some/path/api/whoami')
   assert.equal((fetches[0].init.headers as Record<string, string>).Authorization, 'Bearer saved')
   assert.equal(client.state.authenticated, true)

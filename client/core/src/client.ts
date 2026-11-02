@@ -179,19 +179,19 @@ export class NekoClient {
     this.store.setState({ connection: { ...this.state.connection, url: http, token }, authenticated: false })
 
     if (this.opts.autoconnect) {
-      this.authenticate()
-        .then(() => this.connect())
-        .catch(() => {})
+      this.authenticate(undefined, true).catch(() => {})
     }
   }
 
-  async authenticate(token = this.state.connection.token) {
+  async authenticate(token = this.state.connection.token, connect = false) {
     this.store.setState({ authenticating: true })
     try {
       if (!token && this.opts.autologin) token = localStorage.getItem('neko_session') ?? undefined
       if (token) this.setToken(token)
       await this.api.req('GET', '/whoami')
       this.store.setState({ authenticated: true })
+      // Keep the loading state until autoconnect has started: no disconnected form between awaits.
+      if (connect) this.connect()
     } finally {
       this.store.setState({ authenticating: false })
     }
