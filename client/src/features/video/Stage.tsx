@@ -41,7 +41,7 @@ export function Stage({
   const { t } = useTranslation()
   const { client, overlay } = useNeko()
   const actions = useActions()
-  const { admin, hosting, hosted, implicit, lockedControls, video } = useStore(
+  const { admin, hosting, hosted, implicit, lockedControls, video, screen } = useStore(
     client.store,
     useShallow((s) => ({
       admin: selectIsAdmin(s),
@@ -50,6 +50,7 @@ export function Stage({
       implicit: s.settings.implicit_hosting,
       lockedControls: s.settings.locked_controls,
       video: s.video,
+      screen: s.screen.size,
     })),
   )
   const player = useRef<HTMLDivElement>(null)
@@ -58,8 +59,11 @@ export function Stage({
 
   const controlLocked = lockedControls && !admin
   const { playing, playable, muted, mutedByAutoplay } = video
-  // usually the extra controls are only shown on a phone
-  const extra = extraControls ? '' : 'phone:block hidden'
+  // usually the extra controls are only shown on a phone; inside the console, on any touch screen
+  const extra = extraControls || consoleMode ? '' : 'phone:block hidden'
+  // inside the console the desktop fills the frame: keep the bottom buttons above a dock or taskbar of up to
+  // 64 desktop pixels, at whatever scale the desktop is shown
+  const bottomClear = consoleMode && screen.height > 0 ? Math.round(10 + (64 * window.innerHeight) / screen.height) : 15
 
   return (
     <div className="relative h-full w-full">
@@ -128,7 +132,7 @@ export function Stage({
           </ul>
         )}
         {!fullscreen && !hideControls && (
-          <ul className="absolute right-5 bottom-[15px]">
+          <ul className="absolute right-5" style={{ bottom: bottomClear }}>
             {hosting && !canReadClipboard && (
               <li className="mb-2.5 last:mb-0">
                 {/* modal: the overlay takes the keyboard focus when the mouse enters the video,
