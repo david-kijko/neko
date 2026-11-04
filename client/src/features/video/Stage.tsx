@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { useStore } from 'zustand'
 import { useShallow } from 'zustand/react/shallow'
 import { selectControlling, selectIsAdmin } from '@m1k1o/neko'
@@ -65,12 +65,26 @@ export function Stage({
   // 64 desktop pixels, at whatever scale the desktop is shown
   const bottomClear = consoleMode && screen.height > 0 ? Math.round(10 + (64 * window.innerHeight) / screen.height) : 15
 
+  // Inside the console nothing covers the desktop: when the browser started the stream muted (autoplay rules) or
+  // paused, the first tap or click on the desktop unmutes or plays it, and still reaches the desktop. The console's
+  // volume icon shows the muted state meanwhile.
+  useEffect(() => {
+    if (!consoleMode) return
+    const wake = () => {
+      const v = client.state.video
+      if (v.playable && !v.playing) client.play().catch(() => {})
+      if (v.muted && v.mutedByAutoplay) client.unmute()
+    }
+    window.addEventListener('pointerdown', wake, true)
+    return () => window.removeEventListener('pointerdown', wake, true)
+  }, [client, consoleMode])
+
   return (
     <div className="relative h-full w-full">
       <div ref={player} className="absolute inset-0 flex items-center justify-center bg-black">
         <div className="absolute inset-0" data-testid="player" onMouseEnter={syncClipboard}>
           <Player transport={client.transport} />
-          {!playing && playable ? (
+          {consoleMode ? null : !playing && playable ? (
             <IconButton
               label="Play"
               className={overlayClasses}
