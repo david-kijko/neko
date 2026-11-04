@@ -19,7 +19,7 @@ const menuKey = ({ client, app }: NekoApp, e: React.KeyboardEvent, id: string) =
 
 // a participant: their Hands avatar and their name in a rounded pill, like the console's chips
 const member =
-  'relative flex h-10 max-w-[200px] items-center gap-2 rounded-full bg-background-secondary py-1 pr-3.5 pl-1 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-style-primary'
+  'relative flex h-10 max-w-[280px] items-center gap-2 rounded-full bg-background-secondary py-1 pr-3.5 pl-1 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-style-primary'
 const nameClass = 'min-w-0 truncate text-[13px] font-semibold text-text-normal'
 // the badges after the name: the host (a crown, in the accent colour), an admin (a shield), you (a word)
 const badge = 'size-4 shrink-0 text-style-primary'

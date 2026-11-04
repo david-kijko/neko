@@ -1,8 +1,8 @@
 import type { CSSProperties } from 'react'
 import { Toaster as Sonner } from 'sonner'
 
-// shadcn/ui's sonner toaster, at the top left in the look of the legacy vue-notification theme:
-// a list of 290px toasts with a coloured left border per kind, no icons (state/dialogs.ts toast())
+// shadcn/ui's sonner toaster, at the top left: 290px toasts in the console's rounded dark surface with a
+// coloured left edge per kind (the Hands accent, sage, amber, red), no icons (state/dialogs.ts toast())
 export function Toaster() {
   return (
     <Sonner
@@ -17,12 +17,14 @@ export function Toaster() {
       toastOptions={{
         unstyled: true,
         classNames: {
-          toast: 'border-l-[5px] p-2.5 text-[12px] text-white',
+          toast:
+            'rounded-hands-md border border-l-4 border-background-accent bg-background-floating px-3.5 py-2.5 text-[13px] text-text-normal shadow-elevation-high',
           title: 'font-semibold',
-          info: 'border-[#187fe7] bg-[#44a4fc]',
-          success: 'border-[#42a85f] bg-[#68cd86]',
-          warning: 'border-[#f48a06] bg-[#ffb648]',
-          error: 'border-[#b82e24] bg-[#e54d42]',
+          description: 'mt-0.5 text-text-muted',
+          info: 'border-l-style-primary',
+          success: 'border-l-[#a4b986]',
+          warning: 'border-l-[#f3aa78]',
+          error: 'border-l-style-error',
         },
       }}
     />
