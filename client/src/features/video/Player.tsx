@@ -9,6 +9,9 @@ export function Player({ transport }: { transport: StreamTransport }) {
   const box = useRef<HTMLDivElement>(null)
   useEffect(() => {
     const detach = transport.attach(box.current!)
+    // no picture-in-picture: the browser's own button and menu entry on the stream are turned off
+    const el = transport.element
+    if (el instanceof HTMLVideoElement) el.disablePictureInPicture = true
     const detachOverlay = overlay.attach(box.current!)
     return () => {
       detachOverlay()

@@ -37,10 +37,7 @@ export function Settings() {
   const [url, setUrl] = useState(broadcast.url)
   useEffect(() => setUrl(broadcast.url), [broadcast.url])
 
-  const toggle = (
-    key: 'scroll_invert' | 'autoplay' | 'ignore_emotes' | 'chat_sound' | 'links_in_app',
-    name: string,
-  ) => (
+  const toggle = (key: 'scroll_invert' | 'autoplay' | 'chat_sound' | 'links_in_app', name: string) => (
     <li className={row}>
       <span className={label}>{t(`setting.${name}`)}</span>
       {/* the switch: the input, its track and its knob */}
@@ -77,7 +74,6 @@ export function Settings() {
         </li>
         {toggle('scroll_invert', 'scroll_invert')}
         {toggle('autoplay', 'autoplay')}
-        {toggle('ignore_emotes', 'ignore_emotes')}
         {toggle('chat_sound', 'chat_sound')}
         {openInApp && toggle('links_in_app', 'links_in_app')}
         <li className={row}>

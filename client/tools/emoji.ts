@@ -29,7 +29,7 @@ const GROUP: Record<string, string> = {
   Objects: 'objects',
 }
 const GROUP_NAME: Record<string, string> = {
-  neko: 'Neko',
+  custom: 'Custom',
   emotion: 'Emotion',
   people: 'People',
   nature: 'Nature',
@@ -47,7 +47,7 @@ const list: string[] = []
 const groups: Record<string, string[]> = Object.fromEntries(Object.keys(GROUP_NAME).map((g) => [g, []]))
 
 for (const emoji of custom) {
-  groups.neko.push(emoji.name)
+  groups.custom.push(emoji.name)
   list.push(emoji.name)
   keywords[emoji.name] = emoji.keywords
 }
@@ -75,7 +75,10 @@ for (const source of datasource) {
 }
 
 const data = {
-  groups: Object.entries(GROUP_NAME).map(([id, name]) => ({ id, name, list: groups[id] })),
+  // a group with nothing in it (custom, while there are none) is left out of the picker
+  groups: Object.entries(GROUP_NAME)
+    .filter(([id]) => groups[id].length)
+    .map(([id, name]) => ({ id, name, list: groups[id] })),
   list,
   keywords,
   chars,

@@ -4,7 +4,6 @@ import { isLocked, name, scoped, type LockResource } from './app'
 import { api } from './api'
 import { toast } from './dialogs'
 import { line } from './bus'
-import { sendEmote } from './emotes'
 import { useNeko } from './provider'
 import { t } from '@/i18n'
 
@@ -29,8 +28,6 @@ export const actions = scoped((neko) => {
       if (host && !client.state.settings.implicit_hosting)
         toast(t('notifications.controls_has', { name: name(client, host) }), t('notifications.controls_has_alt'))
     },
-
-    sendEmote: (emote: string) => sendEmote(neko, emote),
 
     toggleLock(r: LockResource) {
       const locked = !isLocked(r, client.state.settings)

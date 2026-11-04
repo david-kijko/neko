@@ -170,11 +170,6 @@ await step('alice: right-click bob -> Force Release', async () => {
     timeout: 5000,
   })
 })
-await step('alice sends emote, bob sees animation', async () => {
-  await A.click('[data-testid=emotes-open]')
-  await A.click('[data-testid=emotes-menu] [data-emote=wave]')
-  await B.waitForSelector('[data-testid=emote-animation]', { timeout: 3000 })
-})
 await step('files: alice uploads, the list shows the file', async () => {
   if (!(await A.locator('[data-testid=tabs] >> text=Files').count()))
     throw new Error('no Files tab: start the server with NEKO_FILETRANSFER_ENABLED=true')
@@ -226,18 +221,6 @@ await step('muting the sound keeps the desktop usable', async () => {
   if (await A.locator('[data-testid=player-overlay]').count()) throw new Error('unmute overlay covers the video')
   await A.click('[data-testid=mute]')
   await A.waitForFunction(() => !document.querySelector('video').muted, null, { timeout: 3000 })
-})
-await step('emoji picker inserts :name:', async () => {
-  await A.click('[data-testid=emoji-open]')
-  await A.fill('[data-testid=emoji-search]', 'thumbsup')
-  await A.click('[data-testid=emoji-list] [data-emoji] >> nth=0')
-  const v = await A.inputValue('[data-testid=chat-input]')
-  if (!/^:[^:]+:$/.test(v)) throw new Error('textarea is ' + JSON.stringify(v))
-  // the keyboard stays in the message box after a pick (the picker's close must not focus its button)
-  await A.keyboard.type('x')
-  const v2 = await A.inputValue('[data-testid=chat-input]')
-  if (!/^:[^:]+:x$/.test(v2)) throw new Error('after the pick the keyboard went elsewhere: ' + JSON.stringify(v2))
-  await A.fill('[data-testid=chat-input]', '')
 })
 await step('language switch (de) and back', async () => {
   await A.selectOption('[data-testid=lang]', 'de')

@@ -9,7 +9,6 @@ import {
   KeyboardIcon,
   MonitorIcon,
   MouseIcon,
-  PictureInPictureIcon,
   PlayCircleIcon,
   SpeakerHighIcon,
 } from '@phosphor-icons/react'
@@ -19,13 +18,11 @@ import { useNeko } from '@/state/provider'
 import { IconButton } from '@/components/IconButton'
 import { DropdownMenu, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Popover, PopoverTrigger } from '@/components/ui/popover'
-import { Emote } from '@/features/emotes/Emote'
 import { Resolution } from './Resolution'
 import { Clipboard } from './Clipboard'
 import { Player } from './Player'
 import { useFullscreen } from './useFullscreen'
 import { useClipboardSync, canReadClipboard } from './useClipboardSync'
-import { usePip } from './usePip'
 
 // the play / unmute button covering the video
 const overlayClasses =
@@ -33,7 +30,7 @@ const overlayClasses =
 
 export function Stage({ hideControls, extraControls }: { hideControls: boolean; extraControls: boolean }) {
   const { t } = useTranslation()
-  const { client, overlay, app } = useNeko()
+  const { client, overlay } = useNeko()
   const actions = useActions()
   const { admin, hosting, hosted, implicit, lockedControls, video } = useStore(
     client.store,
@@ -46,11 +43,9 @@ export function Stage({ hideControls, extraControls }: { hideControls: boolean; 
       video: s.video,
     })),
   )
-  const emotes = useStore(app, (s) => s.emotes)
   const player = useRef<HTMLDivElement>(null)
   const { fullscreen, request: requestFullscreen } = useFullscreen(player)
   const syncClipboard = useClipboardSync()
-  const pip = usePip()
 
   const controlLocked = lockedControls && !admin
   const { playing, playable, muted, mutedByAutoplay } = video
@@ -62,11 +57,6 @@ export function Stage({ hideControls, extraControls }: { hideControls: boolean; 
       <div ref={player} className="absolute inset-0 flex items-center justify-center bg-black">
         <div className="absolute inset-0" data-testid="player" onMouseEnter={syncClipboard}>
           <Player transport={client.transport} />
-          <div className="pointer-events-none absolute inset-0 overflow-hidden">
-            {Object.entries(emotes).map(([id, type]) => (
-              <Emote key={id} id={id} type={type} />
-            ))}
-          </div>
           {!playing && playable ? (
             <IconButton
               label="Play"
@@ -142,13 +132,6 @@ export function Stage({ hideControls, extraControls }: { hideControls: boolean; 
                   </PopoverTrigger>
                   <Clipboard />
                 </Popover>
-              </li>
-            )}
-            {pip.canPip && (
-              <li className="mb-2.5 last:mb-0">
-                <IconButton variant="video" label="Picture-in-Picture" onClick={pip.request}>
-                  <PictureInPictureIcon className="size-4" />
-                </IconButton>
               </li>
             )}
             {hosting && client.isTouchDevice && (

@@ -14,7 +14,7 @@ const { emoji } = await import('./emoji.ts')
 const { FORMAT_LIMIT, safeUrl } = await import('./markdown.ts')
 const { Markdown } = await import('./Markdown.tsx')
 
-Object.assign(emoji, { names: new Set(['smile', 'neko']), chars: { smile: '😄' } })
+Object.assign(emoji, { names: new Set(['smile']), chars: { smile: '😄' } })
 const neko = createNekoApp({ transport: fakeTransport() })
 
 // the message's HTML, inside the chat-body div
@@ -52,7 +52,6 @@ test('inline formatting, code, spoilers, line breaks, emoji, escapes', () => {
   expect(html('hi :smile: :not an emoji :nope: 12:30:45')).toBe(p(`hi ${EMOJI} :not an emoji :nope: 12:30:45`))
   expect(html('||:smile:||')).toBe(p(SPOILER.replace('<span>secret</span>', `<span>${EMOJI}</span>`)))
   expect(html('`:smile:` and `||x||`')).not.toContain('data-')
-  expect(html(':neko:')).toMatch(/^<p><img class="[^"]*" src="[^"]+" alt=":neko:" data-emoji="neko"\/><\/p>$/) // the custom one is an image of ours
   expect(html('\\*not em\\*')).toBe(p('*not em*'))
 })
 

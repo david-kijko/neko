@@ -4,7 +4,6 @@ import { isLocked, name, type LockResource, type NekoApp } from './app'
 import { actions } from './actions'
 import { toast, tell, dismissToasts } from './dialogs'
 import { event } from './bus'
-import { EMOTES, showEmote } from './emotes'
 import { t } from '@/i18n'
 
 // once per instance (createNekoApp), before the connection
@@ -101,11 +100,6 @@ export function wireEvents(neko: NekoApp) {
   ev.on('upload.drop.finished', (error) => error && toast(error.message, undefined, 'error'))
 
   ev.on('room.broadcast.status', (active, url) => app.setState({ broadcast: { active, url: url || '' } }))
-
-  ev.on('receive.broadcast', (sender, subject, body) => {
-    // other clients may send anything; only known names become class names on screen
-    if (subject === 'emote' && EMOTES.includes(body) && !app.getState().ignored[sender]) showEmote(app, body)
-  })
 
   // plugin events (`chat/*`, ...) are dispatched by the plugin registry
   ev.on('message', (event, payload) => {

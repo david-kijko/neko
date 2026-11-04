@@ -2,8 +2,8 @@ import type { ComponentProps } from 'react'
 import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu'
 import { cn } from '@/lib/utils'
 
-// shadcn/ui dropdown menu on Radix: a menu opened from a trigger element (the resolution list,
-// the emote picker); roving focus, typeahead, Escape, outside click and ARIA
+// shadcn/ui dropdown menu on Radix: a menu opened from a trigger element (the screen
+// resolution list); roving focus, typeahead, Escape, outside click and ARIA
 function DropdownMenu(props: ComponentProps<typeof DropdownMenuPrimitive.Root>) {
   return <DropdownMenuPrimitive.Root data-slot="dropdown-menu" {...props} />
 }

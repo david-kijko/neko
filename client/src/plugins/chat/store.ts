@@ -18,7 +18,6 @@ export const createChatStore = () =>
     // chat/init: the server's chat plugin is on
     enabled: true,
     emojiReady: false,
-    emojiRecent: [] as string[],
   }))
 export type ChatStore = ReturnType<typeof createChatStore>
 // the store of an instance (`chat(neko)`, `chat(useNeko())`)

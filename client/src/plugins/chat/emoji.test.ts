@@ -14,8 +14,8 @@ const data = JSON.parse(readFileSync(new URL('../../../public/emoji.json', impor
 const charOf = (unified: string) => String.fromCodePoint(...unified.split('-').map((h) => parseInt(h, 16)))
 
 describe('emoji.json', () => {
-  // the custom emoji (tools/emoji_custom.ts) are the images of the neko group
-  const images = new Set(data.groups.find((g) => g.id === 'neko')!.list)
+  // the custom emoji (tools/emoji_custom.ts) are the images of the custom group, when there are any
+  const images = new Set(data.groups.find((g) => g.id === 'custom')?.list ?? [])
 
   it('has one character per name, the one of its unified code points, and none for the custom images', () => {
     for (const name of data.list) {

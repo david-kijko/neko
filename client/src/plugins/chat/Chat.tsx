@@ -5,16 +5,12 @@ import { useTranslation } from 'react-i18next'
 import { useActions } from '@/state/actions'
 import { selectMuted } from '@/state/app'
 import { useNeko } from '@/state/provider'
-import { SmileyWinkIcon } from '@phosphor-icons/react'
 import { cn } from '@/lib/utils'
-import { IconButton } from '@/components/IconButton'
 import { Avatar } from '@/components/Avatar'
-import { Popover, PopoverTrigger } from '@/components/ui/popover'
 import { chat } from './store'
 import { sendChat } from './actions'
 import { loadEmoji } from './emoji'
 import { Markdown } from './Markdown'
-import { EmojiPicker } from './EmojiPicker'
 
 const time = (d: Date) =>
   d.toDateString() === new Date().toDateString()
@@ -38,7 +34,6 @@ export function Chat() {
     useShallow((s) => ({ lines: s.lines, enabled: s.enabled })),
   )
   const [text, setText] = useState('')
-  const [picker, setPicker] = useState(false)
   const history = useRef<HTMLUListElement>(null)
   const input = useRef<HTMLTextAreaElement>(null)
 
@@ -54,21 +49,6 @@ export function Chat() {
     if (!text.trim()) return
     sendChat(neko, text)
     setText('')
-  }
-
-  // insert :name: at the cursor, like the legacy picker
-  const onEmoji = (name: string) => {
-    const el = input.current!
-    const code = `:${name}:`
-    const at = el.selectionStart ?? text.length
-    const next = (text.slice(0, at) + code + text.slice(el.selectionEnd ?? at)).slice(0, MAX_MESSAGE)
-    setText(next)
-    setPicker(false)
-    // focus now, not after the popover's exit: a key typed right after the click must land here
-    el.focus()
-    requestAnimationFrame(() => {
-      el.selectionStart = el.selectionEnd = at + code.length
-    })
   }
 
   const nameOf = (m: (typeof lines)[number]) => sessions[m.id]?.profile.name ?? m.name
@@ -131,18 +111,6 @@ export function Chat() {
               onChange={(e) => setText(e.target.value)}
               onKeyDown={onKeyDown}
             />
-            <Popover open={picker} onOpenChange={setPicker}>
-              <PopoverTrigger asChild>
-                <IconButton
-                  label="Emoji"
-                  className="mt-2 mr-2 h-7 w-7 rounded-hands-sm text-interactive-normal hover:bg-background-secondary hover:text-interactive-hover"
-                  data-testid="emoji-open"
-                >
-                  <SmileyWinkIcon className="size-5" />
-                </IconButton>
-              </PopoverTrigger>
-              {picker && <EmojiPicker onPick={onEmoji} onClose={() => input.current?.focus()} />}
-            </Popover>
           </div>
         </div>
       )}

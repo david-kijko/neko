@@ -15,7 +15,6 @@ export const defaults = {
   scroll_sensitivity: 0,
   scroll_invert: true,
   autoplay: true,
-  ignore_emotes: false,
   chat_sound: true,
   // open chat links on the remote desktop instead of locally (needs the openinapp plugin)
   links_in_app: false,
@@ -39,7 +38,6 @@ export function createAppStore() {
     tab: get<string>('tab', 'chat'),
     // openinapp/init: links can be opened on the remote desktop
     openInApp: false,
-    emotes: {} as Record<string, string>,
     ignored: {} as Record<string, boolean>,
     broadcast: { active: false, url: '' },
     keyboardLayouts: {} as Record<string, string>,
@@ -70,7 +68,7 @@ export function scoped<T>(create: (neko: NekoApp) => T): (neko: NekoApp) => T {
 
 export const name = (client: NekoClient, id?: string | null) =>
   (id && client.state.sessions[id]?.profile.name) || t('somebody')
-// the server's chat plugin took this member's right to send (chat.can_send); emotes follow it too
+// the server's chat plugin took this member's right to send (chat.can_send)
 export const selectMuted = (s: State, id = s.session_id) =>
   !!id && s.sessions[id]?.profile.plugins?.['chat.can_send'] === false
 export const isMuted = (client: NekoClient, id?: string | null) => selectMuted(client.state, id)
