@@ -66,7 +66,8 @@ export function Stage({
   const bottomClear = consoleMode && screen.height > 0 ? Math.round(10 + (64 * window.innerHeight) / screen.height) : 15
 
   // Inside the console nothing covers the desktop: when the browser started the stream muted (autoplay rules) or
-  // paused, the first tap or click on the desktop unmutes or plays it, and still reaches the desktop. The console's
+  // paused, the first tap or click on the desktop (on its release, when the browser counts it as a user gesture)
+  // unmutes or plays it, and still reaches the desktop. The console's
   // volume icon shows the muted state meanwhile.
   useEffect(() => {
     if (!consoleMode) return
@@ -75,8 +76,8 @@ export function Stage({
       if (v.playable && !v.playing) client.play().catch(() => {})
       if (v.muted && v.mutedByAutoplay) client.unmute()
     }
-    window.addEventListener('pointerdown', wake, true)
-    return () => window.removeEventListener('pointerdown', wake, true)
+    window.addEventListener('pointerup', wake, true)
+    return () => window.removeEventListener('pointerup', wake, true)
   }, [client, consoleMode])
 
   return (
