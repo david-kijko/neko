@@ -12,7 +12,7 @@ import { Button } from '@/components/ui/button'
 import { row, label } from './classes'
 
 const field =
-  'block h-8 rounded-[5px] border border-transparent bg-background-tertiary leading-7.5 font-light text-ellipsis text-white'
+  'block h-8 rounded-hands-sm border border-background-accent bg-background-tertiary px-2 leading-7.5 font-normal text-ellipsis text-text-normal'
 
 export function Settings() {
   const { t } = useTranslation()
@@ -52,7 +52,7 @@ export function Settings() {
           checked={s[key]}
           onChange={(e) => setSetting(neko, key, e.target.checked)}
         />
-        <span className="absolute inset-0 cursor-pointer rounded-[34px] bg-background-tertiary transition-all duration-200 peer-checked:bg-style-primary" />
+        <span className="absolute inset-0 cursor-pointer rounded-full bg-background-accent transition-all duration-200 peer-checked:bg-style-primary" />
         <span className="absolute bottom-[3px] left-[3px] h-[18px] w-[18px] cursor-pointer rounded-full bg-white shadow-[0_2px_4px_rgba(0,0,0,0.3)] transition-all duration-300 peer-checked:translate-x-[18px]" />
       </label>
     </li>

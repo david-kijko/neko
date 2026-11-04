@@ -35,7 +35,7 @@ export function Dialog() {
         <DialogPortal>
           <DialogOverlay />
           <DialogContent
-            className="w-[34.5em] max-w-[calc(100%-2em)] rounded-[0.3125em] bg-background-secondary p-[1.25em] text-center text-interactive-hover"
+            className="w-[34.5em] max-w-[calc(100%-2em)] rounded-hands-lg border border-background-accent bg-background-floating p-[1.25em] text-center text-interactive-hover"
             data-testid="dialog"
             {...(d.text ? {} : { 'aria-describedby': undefined })}
           >

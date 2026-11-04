@@ -59,8 +59,8 @@ export function Emotes() {
         <li className="mx-[5px] text-[24px]">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <IconButton label="Emotes" data-testid="emotes-open">
-                <SmileyStickerIcon className="size-6" />
+              <IconButton variant="bar" label="Emotes" data-testid="emotes-open">
+                <SmileyStickerIcon className="size-5" />
               </IconButton>
             </DropdownMenuTrigger>
             <DropdownMenuContent

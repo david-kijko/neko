@@ -85,21 +85,21 @@ export function Controls() {
   }
 
   return (
-    <ul className="flex items-center justify-center self-center">
+    <ul className="flex items-center justify-center gap-1 self-center">
       {!implicit && (!controlLocked || hosting) && (
         <li>
           <IconButton
+            variant="bar"
             label={hosting ? t('controls.release') : t('controls.request')}
             className={cn(
-              'px-[5px]',
-              hosted && !hosting && 'text-style-error/40',
+              hosted && !hosting && 'text-style-error/60',
               !hosted && !hosting && 'text-text-normal/40',
               shake && !hosting && 'animate-shake',
             )}
             data-testid="control-request"
             onClick={() => playable && actions.toggleControl()}
           >
-            <KeyboardIcon className="size-6" />
+            <KeyboardIcon className="size-[22px]" />
           </IconButton>
         </li>
       )}
@@ -109,7 +109,7 @@ export function Controls() {
           data-testid="control-implicit"
           title={t(controlLocked ? 'controls.hasnot' : 'controls.has')}
         >
-          <CursorIcon className={cn('size-6', controlLocked && 'text-style-error/40')} />
+          <CursorIcon className={cn('size-[22px]', controlLocked && 'text-style-error/40')} />
         </li>
       )}
       {(implicit || !controlLocked || hosting) && (
@@ -127,7 +127,7 @@ export function Controls() {
               disabled={lockDisabled}
               onChange={(e) => (e.target.checked ? client.lock() : client.unlock())}
             />
-            <span className="absolute inset-0 rounded-[34px] bg-background-secondary transition-all duration-200 peer-checked:bg-style-primary peer-focus-visible:outline-2 peer-focus-visible:outline-style-primary" />
+            <span className="absolute inset-0 rounded-full bg-background-accent transition-all duration-200 peer-checked:bg-style-primary peer-focus-visible:outline-2 peer-focus-visible:outline-style-primary" />
             <span
               className={cn(
                 'absolute bottom-[3px] left-[3px] flex h-[18px] w-[18px] items-center justify-center rounded-full text-background-tertiary shadow-[0_2px_4px_rgba(0,0,0,0.3)] transition-all duration-300 peer-checked:translate-x-[18px]',
@@ -141,39 +141,45 @@ export function Controls() {
       )}
       <li>
         <IconButton
+          variant="bar"
           label={playing ? 'Pause' : 'Play'}
-          className={cn('px-[5px]', !playable && 'text-style-error/40')}
+          className={cn(!playable && 'text-style-error/60')}
           onClick={() => playable && (playing ? client.pause() : client.play().catch(() => {}))}
         >
-          {playing ? <PauseCircleIcon className="size-6" /> : <PlayCircleIcon className="size-6" />}
+          {playing ? <PauseCircleIcon className="size-[22px]" /> : <PlayCircleIcon className="size-[22px]" />}
         </IconButton>
       </li>
       {micAllowed && (
         <li>
           <IconButton
+            variant="bar"
             label={t(micOn ? 'controls.mic_off' : 'controls.mic_on')}
-            className={cn('px-[5px]', !micOn && 'text-text-normal/40')}
+            className={cn(!micOn && 'text-text-normal/40')}
             data-testid="mic"
             data-on={micOn || undefined}
             onClick={toggleMic}
           >
-            {micOn ? <MicrophoneIcon className="size-6" /> : <MicrophoneSlashIcon className="size-6" />}
+            {micOn ? <MicrophoneIcon className="size-[22px]" /> : <MicrophoneSlashIcon className="size-[22px]" />}
           </IconButton>
         </li>
       )}
       <li>
         <div className="flex items-center justify-center whitespace-nowrap">
           <IconButton
+            variant="bar"
             label={muted ? 'Unmute' : 'Mute'}
-            className="px-[5px]"
             data-testid="mute"
             onClick={() => (muted ? client.unmute() : client.mute())}
           >
-            {volume === 0 || muted ? <SpeakerSlashIcon className="size-6" /> : <SpeakerHighIcon className="size-6" />}
+            {volume === 0 || muted ? (
+              <SpeakerSlashIcon className="size-[22px]" />
+            ) : (
+              <SpeakerHighIcon className="size-[22px]" />
+            )}
           </IconButton>
           <input
             type="range"
-            className="slider h-5 w-[150px]"
+            className="slider ml-1 h-5 w-[130px]"
             min="0"
             max="100"
             aria-label="Volume"

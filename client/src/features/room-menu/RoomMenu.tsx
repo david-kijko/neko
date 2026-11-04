@@ -14,20 +14,25 @@ export function RoomMenu() {
   return (
     <ul className="ml-2.5 self-center">
       <li className="mr-2.5 inline-block align-middle">
-        <IconButton label="About Hands Computer" data-testid="about-open" onClick={() => app.setState({ about: true })}>
-          <QuestionIcon className="size-6" />
+        <IconButton
+          variant="bar"
+          label="About Hands Computer"
+          data-testid="about-open"
+          onClick={() => app.setState({ about: true })}
+        >
+          <QuestionIcon className="size-5" />
         </IconButton>
       </li>
       <li className="mr-2.5 inline-block align-middle">
         {admin && (
           <span className="inline-block" data-testid="admin-badge" title={t('admin_loggedin')}>
-            <ShieldIcon className="size-6" role="img" aria-label={t('admin_loggedin')} />
+            <ShieldIcon className="size-5 text-interactive-normal" role="img" aria-label={t('admin_loggedin')} />
           </span>
         )}
       </li>
       <li className="mr-2.5 inline-block align-middle">
         <select
-          className="inline-block h-[26px] cursor-pointer appearance-none rounded-[5px] border border-background-primary bg-background-tertiary align-text-bottom text-white [&_option]:bg-background-tertiary [&_option]:font-normal [&_option]:text-text-normal"
+          className="inline-block h-8 cursor-pointer appearance-none rounded-hands-sm border border-background-accent bg-background-secondary px-2.5 align-middle text-[13px] font-semibold text-text-normal transition-colors hover:border-interactive-muted [&_option]:bg-background-floating [&_option]:font-normal [&_option]:text-text-normal"
           data-testid="lang"
           value={i18n.language}
           onChange={(e) => setLang(e.target.value as Lang)}

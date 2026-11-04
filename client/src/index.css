@@ -1,6 +1,7 @@
 /* Tailwind v4 and the design tokens (README, "Design"): preflight, theme, utilities, the global
-   rules of the page and the responsive variants of the layout. The font is the system stack
-   (Tailwind's --font-sans). */
+   rules of the page and the responsive variants of the layout. The colours, fonts and radii are the
+   Hands console's dark theme (get-hands-app public/styles.css :root[data-theme="dark"] and
+   console.css), so the viewer looks native inside the console. */
 @import 'tailwindcss';
 
 @font-face {
@@ -10,33 +11,62 @@
   font-style: normal;
   font-display: swap;
 }
+/* Figtree, the console's body font: variable 400-700, swapped in so it never delays the first frame */
+@font-face {
+  font-family: 'Figtree';
+  src: url('./assets/fonts/figtree-latin.woff2') format('woff2');
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC,
+    U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Figtree';
+  src: url('./assets/fonts/figtree-latin-ext.woff2') format('woff2');
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+  unicode-range:
+    U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F,
+    U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
 
 @theme {
   --font-brand: 'Caprasimo', Georgia, serif;
-  /* the tokens of src/design/_variables.scss, same values: text-text-normal, bg-background-primary, ... */
-  --color-text-normal: #dcddde;
-  --color-text-muted: #72767d;
-  --color-text-link: #00b0f4;
+  --font-sans: 'Figtree', system-ui, sans-serif;
+  /* the same token names as before (text-text-normal, bg-background-primary, ...), Hands values */
+  --color-text-normal: #f4eadc;
+  --color-text-muted: #9a8f7e;
+  --color-text-link: #f3aa78;
 
-  --color-interactive-normal: #b9bbbe;
-  --color-interactive-hover: #dcddde;
-  --color-interactive-muted: #4f545c;
+  --color-interactive-normal: #bdb1a0;
+  --color-interactive-hover: #f4eadc;
+  --color-interactive-muted: #5b5347;
 
-  --color-background-primary: #36393f;
-  --color-background-secondary: #2f3136;
-  --color-background-tertiary: #202225;
-  --color-background-accent: #4f545c;
-  --color-background-floating: #18191c;
-  --color-background-modifier-hover: rgba(79, 84, 92, 0.16);
-  --color-background-modifier-active: rgba(79, 84, 92, 0.24);
-  --color-background-modifier-selected: rgba(79, 84, 92, 0.32);
-  --color-background-modifier-accent: hsla(0, 0%, 100%, 0.06);
+  /* page and bars (console --color-bg), side panel (--color-surface), raised controls, borders */
+  --color-background-primary: #211f1b;
+  --color-background-secondary: #2d2924;
+  --color-background-tertiary: #171613;
+  --color-background-accent: #423c33;
+  --color-background-floating: #24211d;
+  --color-background-modifier-hover: rgba(244, 234, 220, 0.06);
+  --color-background-modifier-active: rgba(244, 234, 220, 0.1);
+  --color-background-modifier-selected: rgba(244, 234, 220, 0.14);
+  --color-background-modifier-accent: rgba(244, 234, 220, 0.08);
 
-  --shadow-elevation-low: 0 1px 0 rgba(4, 4, 5, 0.2), 0 1.5px 0 rgba(6, 6, 7, 0.05), 0 2px 0 rgba(4, 4, 5, 0.05);
-  --shadow-elevation-high: 0 8px 16px rgba(0, 0, 0, 0.24);
+  --shadow-elevation-low: 0 1px 2px rgb(0 0 0 / 32%);
+  --shadow-elevation-high: 0 16px 38px rgb(0 0 0 / 48%);
 
-  --color-style-primary: #19bd9c;
-  --color-style-error: #d32f2f;
+  /* the console's dark accent and its failed/danger colour */
+  --color-style-primary: #e9955d;
+  --color-style-error: #f18e85;
+
+  /* the console's rounded shapes: buttons, fields and menus */
+  --radius-hands-sm: 9px;
+  --radius-hands-md: 14px;
+  --radius-hands-lg: 18px;
 
   /* $text-size: the size of the UI text (text-ui); $text-family became Tailwind's --font-sans */
   --text-ui: 14px;

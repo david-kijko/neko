@@ -15,7 +15,7 @@ export function Clipboard() {
     <PopoverContent
       side="left"
       align="end"
-      className="block h-[130px] w-[330px] rounded-[3.5px] bg-background-primary p-[5px]"
+      className="block h-[130px] w-[330px] rounded-hands-md border border-background-accent bg-background-primary p-2"
       data-testid="clipboard"
     >
       <textarea

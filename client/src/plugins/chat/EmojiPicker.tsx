@@ -91,14 +91,14 @@ export function EmojiPicker({ onPick, onClose }: { onPick: (name: string) => voi
         e.preventDefault()
         onClose()
       }}
-      className="flex h-[350px] w-[300px] flex-col overflow-hidden rounded-[5px] bg-background-secondary shadow-elevation-high"
+      className="flex h-[350px] w-[300px] flex-col overflow-hidden rounded-hands-md border border-background-accent bg-background-floating shadow-elevation-high"
       data-testid="emoji-picker"
     >
       <div className="shrink-0 border-b border-background-tertiary p-2.5">
         <div className="relative flex flex-col text-interactive-normal">
           <MagnifyingGlassIcon className="absolute top-1.5 right-1.5 size-[15px] opacity-50" />
           <input
-            className="rounded-[5px] border-0 bg-background-floating p-[5px] leading-4 font-medium text-interactive-normal placeholder:font-medium placeholder:text-text-muted"
+            className="rounded-hands-sm border-0 bg-background-secondary px-2.5 py-1.5 leading-4 font-medium text-interactive-normal placeholder:font-medium placeholder:text-text-muted"
             type="text"
             data-testid="emoji-search"
             value={search}

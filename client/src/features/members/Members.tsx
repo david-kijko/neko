@@ -1,8 +1,8 @@
 import { useStore } from 'zustand'
 import { useShallow } from 'zustand/react/shallow'
 import { selectSession } from '@m1k1o/neko'
-import { UserCircleIcon, CrownIcon, ShieldIcon } from '@phosphor-icons/react'
-import { cn } from '@/lib/utils'
+import { useTranslation } from 'react-i18next'
+import { CrownIcon, ShieldIcon } from '@phosphor-icons/react'
 import { useActions } from '@/state/actions'
 import type { NekoApp } from '@/state/app'
 import { useNeko } from '@/state/provider'
@@ -17,17 +17,16 @@ const menuKey = ({ client, app }: NekoApp, e: React.KeyboardEvent, id: string) =
   if (id !== client.state.session_id) app.setState({ menu: { x: r.left, y: r.bottom, id } })
 }
 
+// a participant: their Hands avatar and their name in a rounded pill, like the console's chips
 const member =
-  'relative mt-2.5 mr-[5px] ml-[5px] block h-[50px] w-[50px] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-style-primary'
-// the badges on an avatar: you (a user icon), an admin (a shield), the host (a crown)
-const self = 'absolute mt-[-2px] ml-10 size-[15px] rounded-full bg-background-floating text-style-primary'
-const admin = 'absolute mt-[-2px] ml-11 size-3.5 text-style-primary'
-const host = 'absolute mt-[42px] ml-[-18px] size-5 rounded-full bg-style-primary p-[3px] text-background-floating'
-// the others start after a vertical rule
-const others =
-  'ml-5 before:absolute before:mt-[13px] before:ml-[-9px] before:h-[45px] before:w-0.5 before:bg-background-secondary before:content-[" "]'
+  'relative flex h-10 max-w-[200px] items-center gap-2 rounded-full bg-background-secondary py-1 pr-3.5 pl-1 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-style-primary'
+const nameClass = 'min-w-0 truncate text-[13px] font-semibold text-text-normal'
+// the badges after the name: the host (a crown, in the accent colour), an admin (a shield), you (a word)
+const badge = 'size-4 shrink-0 text-style-primary'
+const you = 'shrink-0 text-[12px] font-medium text-text-muted'
 
 export function Members() {
+  const { t } = useTranslation()
   const neko = useNeko()
   const { client } = neko
   const actions = useActions()
@@ -41,40 +40,44 @@ export function Members() {
     })),
   )
   return (
-    <div className="flex min-h-[74px] flex-1 overflow-x-scroll overflow-y-hidden pb-3.5 [scrollbar-color:var(--color-background-secondary)_var(--color-background-tertiary)] [scrollbar-width:thin]">
-      <div className="mx-auto block px-5">
-        <ul className="whitespace-nowrap">
-          {me && (
-            <li className="inline-block">
-              <div className={member} data-testid="member" data-self data-host={me.id === hostId || undefined}>
-                <UserCircleIcon className={self} />
-                <Avatar seed={me.profile.name} avatar={me.profile.avatar} size={50} />
-                {me.id === hostId && <CrownIcon className={host} />}
+    <div className="flex min-h-[64px] flex-1 items-center overflow-x-auto overflow-y-hidden px-5 [scrollbar-color:var(--color-background-accent)_var(--color-background-tertiary)] [scrollbar-width:thin]">
+      <ul className="mx-auto flex items-center gap-2 whitespace-nowrap" data-testid="members">
+        {me && (
+          <li className="flex" title={me.profile.name}>
+            <div className={member} data-testid="member" data-self data-host={me.id === hostId || undefined}>
+              <Avatar seed={me.profile.name} avatar={me.profile.avatar} size={32} />
+              <span className={nameClass} data-testid="member-name">
+                {me.profile.name}
+              </span>
+              <span className={you}>({t('you')})</span>
+              {me.id === hostId && <CrownIcon className={badge} aria-label="Host" />}
+            </div>
+          </li>
+        )}
+        {Object.values(sessions)
+          .filter((m) => m.id !== sessionId && m.state.is_connected)
+          .map((m) => (
+            <li key={m.id} className="flex" title={m.profile.name}>
+              <div
+                className={member}
+                data-testid="member"
+                data-host={m.id === hostId || undefined}
+                tabIndex={0}
+                aria-label={m.profile.name}
+                aria-haspopup="menu"
+                onContextMenu={(e) => actions.openMenu(e, m.id)}
+                onKeyDown={(e) => menuKey(neko, e, m.id)}
+              >
+                <Avatar seed={m.profile.name} avatar={m.profile.avatar} size={32} />
+                <span className={nameClass} data-testid="member-name">
+                  {m.profile.name}
+                </span>
+                {m.profile.is_admin && <ShieldIcon className={badge} aria-label="Admin" />}
+                {m.id === hostId && <CrownIcon className={badge} aria-label="Host" />}
               </div>
             </li>
-          )}
-          {Object.values(sessions)
-            .filter((m) => m.id !== sessionId && m.state.is_connected)
-            .map((m, i) => (
-              <li key={m.id} className={cn('inline-block', i === 0 && others)} title={m.profile.name}>
-                <div
-                  className={member}
-                  data-testid="member"
-                  data-host={m.id === hostId || undefined}
-                  tabIndex={0}
-                  aria-label={m.profile.name}
-                  aria-haspopup="menu"
-                  onContextMenu={(e) => actions.openMenu(e, m.id)}
-                  onKeyDown={(e) => menuKey(neko, e, m.id)}
-                >
-                  {m.profile.is_admin && <ShieldIcon className={admin} />}
-                  <Avatar seed={m.profile.name} avatar={m.profile.avatar} size={50} />
-                  {m.id === hostId && <CrownIcon className={host} />}
-                </div>
-              </li>
-            ))}
-        </ul>
-      </div>
+          ))}
+      </ul>
     </div>
   )
 }

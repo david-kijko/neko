@@ -19,8 +19,8 @@ describe('IconButton', () => {
     )
     expect(html).toContain('data-testid="t"')
     expect(html).toContain('disabled=""')
-    expect(html).toMatch(/class="[^"]*h-7\.5[^"]*"/)
+    expect(html).toMatch(/class="[^"]*h-8[^"]*"/)
     expect(html).toMatch(/class="[^"]*w-10[^"]*"/)
-    expect(html).not.toMatch(/class="[^"]*w-7\.5[^"]*"/) // the caller's width wins
+    expect(html).not.toMatch(/class="[^"]*\bw-8\b[^"]*"/) // the caller's width wins
   })
 })

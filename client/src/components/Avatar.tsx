@@ -1,36 +1,31 @@
-import { useEffect, useState } from 'react'
+// The Hands avatars a person can pick during sign-up (get-hands-app public/assets/hand-avatars), shipped with
+// this client in public/hands-avatars so they load from the Computer's own origin. Hands sets a member's
+// profile.avatar to `hands:<colour>`; anything else (empty, unknown, an outside URL) shows the neutral
+// Hands logo, so no image is ever fetched from another site.
+const HANDS_AVATARS = ['logo', 'cream', 'night', 'sage', 'orange'] as const
+type HandsAvatar = (typeof HANDS_AVATARS)[number]
+
+export function handsAvatar(avatar?: string): HandsAvatar {
+  const colour = /^hands:([a-z]+)$/.exec(avatar ?? '')?.[1]
+  return HANDS_AVATARS.find((a) => a === colour) ?? 'logo'
+}
 
 export function Avatar({ seed, avatar, size }: { seed: string; avatar?: string; size: number }) {
-  const [failed, setFailed] = useState(false)
-  useEffect(() => setFailed(false), [avatar])
-
-  let url = ''
-  try {
-    const u = new URL(avatar || '')
-    if (u.protocol === 'http:' || u.protocol === 'https:') url = u.toString()
-  } catch {}
-
-  // deterministic pastel color from the name, same formula as the legacy client
-  let a = 0,
-    b = 0,
-    c = 0
-  for (let i = 0; i < seed.length; i++) {
-    a += seed.charCodeAt(i) * 3
-    b += seed.charCodeAt(i) * 5
-    c += seed.charCodeAt(i) * 7
-  }
-  const bg = `rgb(${128 + (a % 128)},${128 + (b % 128)},${128 + (c % 128)})`
-
+  const colour = handsAvatar(avatar)
   return (
-    <div
-      className="inline-block overflow-hidden rounded-full bg-white text-center text-black select-none"
-      style={{ width: size, height: size, lineHeight: size + 'px', fontSize: size / 2, backgroundColor: bg }}
+    <span
+      className="inline-block shrink-0 overflow-hidden rounded-full bg-background-secondary align-middle select-none"
+      style={{ width: size, height: size }}
+      data-avatar={colour}
     >
-      {url && !failed ? (
-        <img src={url} alt={seed} className="block h-full w-full object-cover" onError={() => setFailed(true)} />
-      ) : (
-        seed.substring(0, 2).toUpperCase()
-      )}
-    </div>
+      <img
+        src={`${import.meta.env.BASE_URL}hands-avatars/hands-${colour}.png`}
+        alt={seed}
+        width={size}
+        height={size}
+        draggable={false}
+        className="block h-full w-full object-cover"
+      />
+    </span>
   )
 }

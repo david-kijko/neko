@@ -38,7 +38,7 @@ function ContextMenuContent({ className, ...props }: ComponentProps<typeof MenuP
         side="right"
         align="start"
         className={cn(
-          'z-[1500] max-h-[calc(100vh-50px)] min-w-[150px] overflow-y-auto rounded-[3.5px] bg-background-floating bg-clip-padding p-[5px] text-interactive-normal shadow-elevation-high outline-hidden select-none',
+          'z-[1500] max-h-[calc(100vh-50px)] min-w-[150px] overflow-y-auto rounded-hands-md border border-background-accent bg-background-floating bg-clip-padding p-1.5 text-interactive-normal shadow-elevation-high outline-hidden select-none',
           className,
         )}
         {...props}
@@ -52,7 +52,7 @@ function ContextMenuItem({ className, ...props }: ComponentProps<typeof MenuPrim
     <MenuPrimitive.Item
       data-slot="context-menu-item"
       className={cn(
-        'block cursor-pointer rounded-[3px] p-[5px] font-normal whitespace-nowrap outline-hidden data-highlighted:bg-background-modifier-hover data-highlighted:text-interactive-hover',
+        'block cursor-pointer rounded-hands-sm px-2.5 py-2 font-medium whitespace-nowrap outline-hidden data-highlighted:bg-background-secondary data-highlighted:text-interactive-hover',
         className,
       )}
       {...props}

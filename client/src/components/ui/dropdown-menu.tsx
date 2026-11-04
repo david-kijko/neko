@@ -23,7 +23,7 @@ function DropdownMenuContent({
         data-slot="dropdown-menu-content"
         sideOffset={sideOffset}
         className={cn(
-          'z-[1500] max-h-[calc(100vh-50px)] min-w-[150px] overflow-y-auto rounded-[3.5px] bg-background-floating bg-clip-padding p-[5px] text-interactive-normal shadow-elevation-high outline-hidden select-none',
+          'z-[1500] max-h-[calc(100vh-50px)] min-w-[150px] overflow-y-auto rounded-hands-md border border-background-accent bg-background-floating bg-clip-padding p-1.5 text-interactive-normal shadow-elevation-high outline-hidden select-none',
           className,
         )}
         {...props}
@@ -37,7 +37,7 @@ function DropdownMenuItem({ className, ...props }: ComponentProps<typeof Dropdow
     <DropdownMenuPrimitive.Item
       data-slot="dropdown-menu-item"
       className={cn(
-        'relative cursor-pointer rounded-[3px] outline-hidden data-highlighted:bg-background-modifier-hover data-highlighted:text-interactive-hover',
+        'relative cursor-pointer rounded-hands-sm outline-hidden data-highlighted:bg-background-secondary data-highlighted:text-interactive-hover',
         className,
       )}
       {...props}

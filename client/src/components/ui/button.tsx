@@ -9,13 +9,16 @@ const buttonVariants = cva(
     variants: {
       variant: {
         // connect, settings, about, the broadcast controls
-        primary: 'rounded-[5px] bg-style-primary p-1 leading-7.5 font-bold text-text-normal uppercase',
+        primary:
+          'rounded-hands-sm bg-style-primary px-3 py-1 leading-7.5 font-semibold text-background-tertiary hover:brightness-105',
         // the OAuth login
         outline:
-          'rounded-[5px] border border-style-primary bg-background-tertiary p-1 leading-7.5 font-bold text-text-normal uppercase',
+          'rounded-hands-sm border border-style-primary bg-background-tertiary px-3 py-1 leading-7.5 font-semibold text-text-normal',
         // the dialog's confirm and cancel
-        confirm: 'rounded-[0.25em] bg-background-tertiary px-[2em] py-[0.625em] text-[1.0625em] text-white',
-        cancel: 'rounded-[0.25em] bg-background-floating px-[2em] py-[0.625em] text-[1.0625em] text-white',
+        confirm:
+          'rounded-hands-sm bg-style-primary px-[2em] py-[0.625em] text-[1.0625em] font-semibold text-background-tertiary',
+        cancel:
+          'rounded-hands-sm bg-background-secondary px-[2em] py-[0.625em] text-[1.0625em] font-semibold text-text-normal',
       },
     },
     defaultVariants: { variant: 'primary' },

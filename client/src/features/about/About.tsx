@@ -14,7 +14,7 @@ export function About() {
       <DialogPortal>
         <DialogOverlay className="bg-background-floating/80" />
         <DialogContent
-          className="max-h-[70vh] max-w-[70vw] overflow-x-hidden overflow-y-auto rounded-[5px] bg-background-secondary [scrollbar-color:var(--color-background-tertiary)_transparent] [scrollbar-width:thin]"
+          className="max-h-[70vh] max-w-[70vw] overflow-x-hidden overflow-y-auto rounded-hands-lg border border-background-accent bg-background-floating [scrollbar-color:var(--color-background-tertiary)_transparent] [scrollbar-width:thin]"
           aria-describedby={undefined}
           data-testid="about"
         >

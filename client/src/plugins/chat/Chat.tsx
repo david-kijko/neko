@@ -23,7 +23,7 @@ const time = (d: Date) =>
 
 const MAX_MESSAGE = 512
 // a line of the history: a message (an avatar and the content) or an event
-const line = 'flex flex-1 flex-row flex-nowrap overflow-hidden pt-2.5 pr-[5px] pl-2.5 wrap-break-word select-text'
+const line = 'flex flex-1 flex-row flex-nowrap overflow-hidden pt-2.5 pr-2.5 pl-3 wrap-break-word select-text'
 
 export function Chat() {
   const { t } = useTranslation()
@@ -75,30 +75,31 @@ export function Chat() {
   return (
     <div className="flex max-h-full max-w-full flex-1 flex-col overflow-x-hidden" data-testid="chat">
       <ul
-        className="max-w-full flex-1 overflow-x-hidden overflow-y-scroll selection:bg-text-link [scrollbar-color:var(--color-background-tertiary)_transparent] [scrollbar-width:thin]"
+        className="max-w-full flex-1 overflow-x-hidden overflow-y-scroll selection:bg-style-primary/40 [scrollbar-color:var(--color-background-accent)_transparent] [scrollbar-width:thin]"
         ref={history}
       >
         {lines.map((m, i) => {
           const bulk = i > 0 && lines[i - 1].id === m.id && lines[i - 1].type === 'text'
           return m.type === 'text' ? (
-            <li key={m.seq} className={cn(line, 'text-[16px]', bulk ? 'pt-0' : 'pt-[15px]')} data-testid="chat-message">
+            <li
+              key={m.seq}
+              className={cn(line, 'text-[14px] leading-[1.45]', bulk ? 'pt-0.5' : 'pt-3.5')}
+              data-testid="chat-message"
+            >
               <div
-                className={cn(
-                  'mr-2.5 h-10 w-10 shrink-0 grow-0 overflow-hidden rounded-full bg-style-primary',
-                  bulk && 'invisible h-0',
-                )}
+                className={cn('mr-2.5 h-9 w-9 shrink-0 grow-0 overflow-hidden rounded-full', bulk && 'invisible h-0')}
                 data-testid="chat-author"
                 onContextMenu={(e) => actions.openMenu(e, m.id)}
               >
-                <Avatar seed={nameOf(m)} avatar={sessions[m.id]?.profile.avatar} size={40} />
+                <Avatar seed={nameOf(m)} avatar={sessions[m.id]?.profile.avatar} size={36} />
               </div>
               <div className="flex min-w-0 flex-1 flex-col wrap-break-word">
                 {!bulk && (
                   <div className="mb-[3px] block w-full cursor-default">
-                    <span className="inline-block font-medium text-text-normal">{nameOf(m)}</span>
+                    <span className="inline-block font-semibold text-text-normal">{nameOf(m)}</span>
                     {/* the legacy 0.7rem and 0.3rem at a 14px root */}
                     <span
-                      className="ml-[4.2px] inline-block text-[9.8px] leading-3 font-medium text-text-muted first-letter:uppercase"
+                      className="ml-1.5 inline-block text-[11px] leading-3 font-medium text-text-muted first-letter:uppercase"
                       data-testid="chat-time"
                     >
                       {time(m.created)}
@@ -118,12 +119,11 @@ export function Chat() {
         })}
       </ul>
       {enabled && !muted && (
-        <div className="flex h-[90px] max-h-[90px] shrink-0 flex-col px-2.5 pb-2.5">
-          <div className="mt-[5px] mb-2.5 h-px w-full bg-white/5" />
-          <div className="relative flex h-full w-full flex-1 rounded-[5px] bg-white/5">
+        <div className="flex h-[86px] max-h-[86px] shrink-0 flex-col px-2.5 pt-2 pb-2.5">
+          <div className="relative flex h-full w-full flex-1 rounded-hands-md border border-background-accent bg-background-tertiary transition-colors focus-within:border-style-primary">
             <textarea
               ref={input}
-              className="m-[5px] flex-1 resize-none border-0 bg-transparent text-text-normal caret-text-normal outline-hidden selection:bg-text-link placeholder:text-text-muted [scrollbar-color:var(--color-background-tertiary)_transparent] [scrollbar-width:thin]"
+              className="mx-3 my-2.5 flex-1 resize-none border-0 bg-transparent text-[14px] leading-[1.4] text-text-normal caret-style-primary outline-hidden selection:bg-style-primary/40 placeholder:text-text-muted focus-visible:outline-0 [scrollbar-color:var(--color-background-accent)_transparent] [scrollbar-width:thin]"
               data-testid="chat-input"
               placeholder={t('chat:send_a_message')}
               maxLength={MAX_MESSAGE}
@@ -133,7 +133,11 @@ export function Chat() {
             />
             <Popover open={picker} onOpenChange={setPicker}>
               <PopoverTrigger asChild>
-                <IconButton label="Emoji" className="mt-2 mr-[5px] h-5 w-5" data-testid="emoji-open">
+                <IconButton
+                  label="Emoji"
+                  className="mt-2 mr-2 h-7 w-7 rounded-hands-sm text-interactive-normal hover:bg-background-secondary hover:text-interactive-hover"
+                  data-testid="emoji-open"
+                >
                   <SmileyWinkIcon className="size-5" />
                 </IconButton>
               </PopoverTrigger>

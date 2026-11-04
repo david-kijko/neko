@@ -44,18 +44,18 @@ function Panel({ tabs }: { tabs: PluginTab[] }) {
   return (
     <Tabs value={tab} onValueChange={(id) => (app.setState({ tab: id }), remember('tab', id))} asChild>
       <aside
-        className="tablet:w-full tablet:portrait:h-[60vh] tablet:landscape:h-screen flex max-h-full w-side max-w-full shrink-0 flex-col bg-background-primary"
+        className="tablet:w-full tablet:portrait:h-[60vh] tablet:landscape:h-screen flex max-h-full w-side max-w-full shrink-0 flex-col border-l border-background-secondary bg-background-primary tablet:border-l-0 tablet:border-t"
         data-testid="side"
       >
         <TabsList data-testid="tabs">
           {tabs.map(({ id, icon: Icon, label }) => (
             <TabsTrigger key={id} value={id}>
-              <Icon className="mr-1 inline size-2.5" />
-              <span>{t(label)}</span>
+              <Icon className="size-[18px] shrink-0" />
+              <span className="truncate">{t(label)}</span>
             </TabsTrigger>
           ))}
         </TabsList>
-        <TabsContent value={tab} className="flex max-h-full grow overflow-auto pt-[5px]">
+        <TabsContent value={tab} className="flex max-h-full grow overflow-auto">
           <Page />
         </TabsContent>
       </aside>
