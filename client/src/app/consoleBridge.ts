@@ -112,9 +112,9 @@ export function startConsoleBridge(neko: NekoApp): () => void {
       case 'guests-control': {
         if (!admin || typeof c.value !== 'boolean') return
         void api(neko, 'POST', '/room/settings', { locked_controls: !c.value })
-        // switching guests off also takes the keyboard and mouse back from a guest who has them
+        // switching guests off also takes the keyboard and mouse back from a guest who has them: the owner takes them
         const host = s.control.host_id
-        if (!c.value && host && !s.sessions[host]?.profile.is_admin) void actions(neko).reset()
+        if (!c.value && host && !s.sessions[host]?.profile.is_admin) void actions(neko).take()
         return
       }
       case 'pause':

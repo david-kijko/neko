@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useState, type SyntheticEvent } from 'react'
+import { useEffect } from 'react'
 import { useStore } from 'zustand'
 import { useShallow } from 'zustand/react/shallow'
 import { useTranslation } from 'react-i18next'
@@ -11,9 +11,6 @@ import { Button } from '@/components/ui/button'
 import { HandsBrand } from '@/components/HandsBrand'
 import { embedded } from '@/lib/embed'
 
-const input =
-  'my-[5px] rounded-[5px] border-0 bg-background-tertiary px-2 py-1.5 leading-5 text-text-normal selection:bg-text-link placeholder:text-[#757575]'
-
 const params = new URL(location.href).searchParams
 // ?pwd= invite (e.g. neko-rooms links): used for the first login attempt only, like the legacy
 // client; after that the form asks for a password, so a stale invite is not a dead end
@@ -24,7 +21,7 @@ const loginOnce = (neko: NekoApp, user: string, password: string) =>
     .catch((err) => tell(neko.app, i18n.t('connect.error'), err.message))
     .finally(() => (invite = null))
 
-// the login screen, and the "Connect" screen of a logged-in viewer without a connection
+// the connecting card; a lost connection (with Reconnect) or an ended session; never a sign-in form
 export function Connect() {
   const { t } = useTranslation()
   const neko = useNeko()
@@ -37,22 +34,8 @@ export function Connect() {
       authenticating: s.authenticating,
     })),
   )
-  const [oauth, setOauth] = useState<{
-    enabled?: boolean
-    name?: string
-    login_url?: string
-    password_login_enabled?: boolean
-  }>({})
-  const [displayname, setDisplayname] = useState(params.get('usr') || '')
-  const [password, setPassword] = useState('')
-  // a login attempt that is over has used up the invite: show the form with the password field
-  const [, settled] = useReducer((n: number) => n + 1, 0)
 
   useEffect(() => {
-    client.api
-      .req<typeof oauth>('GET', '/oauth/config')
-      .then(setOauth)
-      .catch(() => {})
     // ?usr=&pwd= (e.g. neko-rooms links) log in straight away, then leave the URL
     if (invite !== null || params.has('usr') || params.has('token')) {
       const url = new URL(location.href)
@@ -61,19 +44,13 @@ export function Connect() {
     }
     // always, even if a saved session is being resumed at the same time: the link wins
     // (login() drops the resumed websocket), and this must not depend on which answer is first
-    if (invite && params.get('usr')) loginOnce(neko, params.get('usr')!, invite).finally(settled)
+    if (invite && params.get('usr')) void loginOnce(neko, params.get('usr')!, invite)
   }, [neko, client])
-
-  const login = (e: SyntheticEvent) => {
-    e.preventDefault()
-    if (!displayname) return tell(app, t('connect.error'), t('connect.empty_displayname'))
-    loginOnce(neko, displayname, invite ?? password).finally(settled)
-  }
 
   // inside the console the viewer never asks anyone to log in: it shows the connecting card, and when the
   // session is gone the console closes it and shows its own start screen (app/consoleBridge.ts 'ended')
   const connecting = embedded || authenticating || status === 'connecting'
-  const passwordLogin = oauth.password_login_enabled !== false
+  const dutch = navigator.language.toLowerCase().startsWith('nl')
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-background-floating/80" data-testid="connect">
       <div className="w-[320px] max-w-[calc(100%-32px)] rounded-[14px] bg-background-secondary p-2.5">
@@ -86,56 +63,23 @@ export function Connect() {
             <div className="absolute top-0 left-0 h-full w-full animate-loader rounded-full bg-[#ff5000] opacity-60 [animation-delay:-1s]"></div>
           </div>
         ) : authenticated ? (
-          // logged in but disconnected (network drop, server restart)
-          <form className="flex flex-col" onSubmit={(e) => (e.preventDefault(), client.connect())}>
-            <span className="block text-center leading-7.5 uppercase">{t('connection.disconnected')}</span>
-            <Button className="my-[5px]" type="submit">
-              {t('connect.connect')}
-            </Button>
-            <Button className="my-[5px]" type="button" onClick={actions(neko).logout}>
-              {t('logout')}
-            </Button>
-          </form>
-        ) : (
-          <form className="flex flex-col" onSubmit={login}>
-            <span className="block text-center leading-7.5 uppercase">
-              {invite === null ? t('connect.login_title') : t('connect.invitation_title')}
+          // logged in but the connection is gone for good (the core gave up reconnecting): try again
+          <div className="flex flex-col items-center px-2 pb-2.5 text-center">
+            <span className="block leading-6">
+              {dutch ? 'De verbinding is verbroken.' : 'The connection was lost.'}
             </span>
-            {passwordLogin && (
-              <input
-                className={input}
-                type="text"
-                placeholder={t('connect.displayname')}
-                value={displayname}
-                onChange={(e) => setDisplayname(e.target.value)}
-                autoFocus
-              />
-            )}
-            {passwordLogin && invite === null && (
-              <input
-                className={input}
-                type="password"
-                placeholder={t('connect.password')}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            )}
-            {passwordLogin && (
-              <Button className="my-[5px]" type="submit">
-                {t('connect.connect')}
-              </Button>
-            )}
-            {oauth.enabled && invite === null && (
-              <Button
-                variant="outline"
-                className="my-[5px]"
-                type="button"
-                onClick={() => oauth.login_url && location.assign(oauth.login_url)}
-              >
-                {oauth.name || 'OAuth'} Login
-              </Button>
-            )}
-          </form>
+            <Button className="my-[5px] w-full" type="button" onClick={() => client.connect()}>
+              {dutch ? 'Opnieuw verbinden' : 'Reconnect'}
+            </Button>
+          </div>
+        ) : (
+          // Hands viewers sign in through the Hands invitation or the console, never with a form here: without a
+          // session the desktop has been closed (End) or the invitation has run out
+          <div className="px-2 pb-3 text-center leading-6" data-testid="session-ended">
+            {dutch
+              ? 'Deze sessie is beëindigd. Vraag de eigenaar om een nieuwe uitnodiging of open Computer opnieuw in Hands.'
+              : 'This session has ended. Ask the owner for a new invitation, or open Computer again in Hands.'}
+          </div>
         )}
       </div>
     </div>
