@@ -342,14 +342,11 @@ await step('admin changes resolution, bob sees event; revert', async () => {
   await A.mouse.click(5, 5)
   await A.waitForFunction((w) => document.querySelector('video').videoWidth === w, width, { timeout: 15000 })
 })
-await step('settings: keyboard layouts loaded, about opens', async () => {
+await step('settings: keyboard layouts loaded, no about button', async () => {
   await A.click('[data-testid=tabs] >> text=Settings')
   const n = await A.locator('[data-testid=settings] select option').count()
   if (n < 20) throw new Error('only ' + n + ' keyboard layouts')
-  await A.click('[data-testid=about-open]')
-  await A.waitForSelector('[data-testid=about] >> text=m1k1o/neko', { timeout: 3000 })
-  await A.click('[data-testid=about-close]')
-  await A.waitForSelector('[data-testid=about]', { state: 'detached', timeout: 3000 })
+  if (await A.locator('[data-testid=about-open]').count()) throw new Error('the About button is back')
   await A.click('[data-testid=tabs] >> text=Chat')
 })
 await step('implicit hosting: bob gets control by clicking', async () => {

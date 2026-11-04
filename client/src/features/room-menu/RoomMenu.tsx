@@ -1,28 +1,17 @@
 import { useStore } from 'zustand'
 import { selectIsAdmin } from '@m1k1o/neko'
 import { useTranslation } from 'react-i18next'
-import { QuestionIcon, ShieldIcon } from '@phosphor-icons/react'
+import { ShieldIcon } from '@phosphor-icons/react'
 import { useNeko } from '@/state/provider'
-import { IconButton } from '@/components/IconButton'
 import { langs, setLang, type Lang } from '@/i18n'
 
-// about, the admin badge and the language picker, left of the controls
+// the admin badge and the language picker, left of the controls (Neko's licence ships as licenses.txt)
 export function RoomMenu() {
   const { t, i18n } = useTranslation()
-  const { client, app } = useNeko()
+  const { client } = useNeko()
   const admin = useStore(client.store, selectIsAdmin)
   return (
     <ul className="ml-2.5 self-center">
-      <li className="mr-2.5 inline-block align-middle">
-        <IconButton
-          variant="bar"
-          label="About Hands Computer"
-          data-testid="about-open"
-          onClick={() => app.setState({ about: true })}
-        >
-          <QuestionIcon className="size-5" />
-        </IconButton>
-      </li>
       <li className="mr-2.5 inline-block align-middle">
         {admin && (
           <span className="inline-block" data-testid="admin-badge" title={t('admin_loggedin')}>

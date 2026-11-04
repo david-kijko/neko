@@ -45,7 +45,6 @@ export function createAppStore() {
     keyboardLayouts: {} as Record<string, string>,
     menu: null as null | { x: number; y: number; id: string },
     dialog: null as Dialog | null,
-    about: false,
   }))
 }
 export type AppStore = ReturnType<typeof createAppStore>

@@ -15,7 +15,6 @@ import { RoomBar } from '@/layout/RoomBar'
 import { Stage } from '@/features/video/Stage'
 import { MemberMenu } from '@/features/members/MemberMenu'
 import { Connect } from '@/features/connect/Connect'
-import { About } from '@/features/about/About'
 
 const params = new URL(location.href).searchParams
 const cast = !!params.get('cast')
@@ -25,10 +24,7 @@ export function App() {
   const { t } = useTranslation()
   const { client, app } = useNeko()
   const connected = useStore(client.store, (s) => s.connection.status === 'connected')
-  const { side, about } = useStore(
-    app,
-    useShallow((s) => ({ side: s.side, about: s.about })),
-  )
+  const side = useStore(app, (s) => s.side)
   const memberMenu = useSlot('member.menu')
 
   if (!WebRTCTransport.supported()) {
@@ -75,7 +71,6 @@ export function App() {
         {expanded && <Side />}
         {!connected && <Connect />}
         {!videoOnly && <Toaster />}
-        {about && <About />}
         <Dialog />
       </div>
     </IconContext.Provider>
