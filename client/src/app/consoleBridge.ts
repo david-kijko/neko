@@ -5,7 +5,7 @@
 // changes. Only the parent window may command, and after its first 'hello' only from that origin; the
 // website lets no page but the console frame the viewer. Every room change is an API call with this
 // viewer's own session, so Neko itself refuses it unless the session is an admin (the Hand's owner).
-import { selectControlling, selectIsAdmin } from '@m1k1o/neko'
+import { selectControlling, selectIsAdmin, selectSession } from '@m1k1o/neko'
 import type { NekoApp } from '@/state/app'
 import { actions } from '@/state/actions'
 import { api } from '@/state/api'
@@ -30,6 +30,31 @@ export function startConsoleBridge(neko: NekoApp): () => void {
   let parentOrigin: string | null = null
   let last = ''
   let queued = 0
+  // the microphone: like the bottom bar's mic button, only while this session has control and may share media
+  let mic: { track: MediaStreamTrack; stop: () => void } | null = null
+  const micAllowed = () =>
+    selectControlling(client.state) &&
+    !!selectSession(client.state)?.profile.can_share_media &&
+    !!navigator.mediaDevices
+  const micOff = () => {
+    if (!mic) return
+    mic.stop()
+    mic.track.stop()
+    mic = null
+    queue()
+  }
+  const micOn = async () => {
+    if (mic || !micAllowed()) return
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+      const track = stream.getAudioTracks()[0]
+      if (!micAllowed()) return stream.getTracks().forEach((t) => t.stop())
+      mic = { track, stop: client.shareMedia(stream) }
+    } catch {
+      mic = null
+    }
+    queue()
+  }
 
   const state = () => {
     const s = client.state
@@ -47,6 +72,8 @@ export function startConsoleBridge(neko: NekoApp): () => void {
       chat: app.getState().side,
       messages,
       touch: client.isTouchDevice,
+      micAllowed: micAllowed(),
+      mic: !!mic,
       members: Object.values(s.sessions)
         .filter((m) => m.id === me || m.state.is_connected)
         .map((m) => ({
@@ -112,6 +139,8 @@ export function startConsoleBridge(neko: NekoApp): () => void {
       }
       case 'keyboard':
         return overlay.mobileKeyboardToggle()
+      case 'mic':
+        return c.value === true ? void micOn() : micOff()
     }
   }
   const onMessage = (e: MessageEvent) => {
@@ -157,6 +186,10 @@ export function startConsoleBridge(neko: NekoApp): () => void {
     client.store.subscribe(queue),
     app.subscribe(queue),
     client.events.on('message', (event) => event === 'chat/message' && (messages++, queue())),
+    // drop the mic when control is lost or the connection is re-made (the track belonged to the old peer)
+    client.store.subscribe((s) => {
+      if (mic && (!micAllowed() || s.connection.status !== 'connected')) micOff()
+    }),
     client.store.subscribe((s, old) => {
       const ready = s.connection.status === 'connected' && !!s.session_id
       const wasReady = old.connection.status === 'connected' && !!old.session_id
@@ -176,5 +209,6 @@ export function startConsoleBridge(neko: NekoApp): () => void {
     window.removeEventListener('resize', fit)
     window.clearTimeout(fitTimer)
     window.clearTimeout(queued)
+    micOff()
   }
 }
