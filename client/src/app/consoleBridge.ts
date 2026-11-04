@@ -11,7 +11,7 @@ import { actions } from '@/state/actions'
 import { api } from '@/state/api'
 import { remember } from '@/state/storage'
 import { handsAvatar } from '@/components/Avatar'
-import { embedded, fitScreen } from './embed'
+import { embedded, fitScreen } from '@/lib/embed'
 
 interface Command {
   type: 'hands:viewer-command'
@@ -28,6 +28,10 @@ export function startConsoleBridge(neko: NekoApp): () => void {
   // chat messages so far, for the unread dot on the console's chat button
   let messages = 0
   let parentOrigin: string | null = null
+  // the viewer's session is gone (website restarted, End, network): connected once, then not for 3 s
+  let wasReady = false
+  let ended = false
+  let endTimer = 0
   let last = ''
   let queued = 0
   // the microphone: like the bottom bar's mic button, only while this session has control and may share media
@@ -63,6 +67,7 @@ export function startConsoleBridge(neko: NekoApp): () => void {
       type: 'hands:viewer-state',
       v: 1,
       ready: s.connection.status === 'connected' && !!me,
+      ended,
       admin: selectIsAdmin(s),
       hosting: selectControlling(s),
       guestsCanControl: !s.settings.locked_controls,
@@ -190,6 +195,20 @@ export function startConsoleBridge(neko: NekoApp): () => void {
     client.store.subscribe((s) => {
       if (mic && (!micAllowed() || s.connection.status !== 'connected')) micOff()
     }),
+    client.store.subscribe((s) => {
+      const ready = s.connection.status === 'connected' && !!s.session_id
+      if (ready) {
+        wasReady = true
+        window.clearTimeout(endTimer)
+        endTimer = 0
+        if (ended) ((ended = false), queue())
+      } else if (wasReady && !endTimer && !ended && s.connection.status !== 'connecting' && !s.authenticating)
+        endTimer = window.setTimeout(() => {
+          const now = client.state
+          endTimer = 0
+          if (now.connection.status !== 'connected' && now.connection.status !== 'connecting') ((ended = true), queue())
+        }, 3000)
+    }),
     client.store.subscribe((s, old) => {
       const ready = s.connection.status === 'connected' && !!s.session_id
       const wasReady = old.connection.status === 'connected' && !!old.session_id
@@ -209,6 +228,7 @@ export function startConsoleBridge(neko: NekoApp): () => void {
     window.removeEventListener('resize', fit)
     window.clearTimeout(fitTimer)
     window.clearTimeout(queued)
+    window.clearTimeout(endTimer)
     micOff()
   }
 }

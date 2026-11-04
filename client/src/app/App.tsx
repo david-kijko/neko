@@ -16,7 +16,7 @@ import { RoomBar } from '@/layout/RoomBar'
 import { Stage } from '@/features/video/Stage'
 import { MemberMenu } from '@/features/members/MemberMenu'
 import { Connect } from '@/features/connect/Connect'
-import { embedded } from './embed'
+import { embedded } from '@/lib/embed'
 import { startConsoleBridge } from './consoleBridge'
 
 const params = new URL(location.href).searchParams

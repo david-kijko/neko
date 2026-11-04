@@ -9,6 +9,7 @@ import { useNeko } from '@/state/provider'
 import { i18n } from '@/i18n'
 import { Button } from '@/components/ui/button'
 import { HandsBrand } from '@/components/HandsBrand'
+import { embedded } from '@/lib/embed'
 
 const input =
   'my-[5px] rounded-[5px] border-0 bg-background-tertiary px-2 py-1.5 leading-5 text-text-normal selection:bg-text-link placeholder:text-[#757575]'
@@ -69,7 +70,9 @@ export function Connect() {
     loginOnce(neko, displayname, invite ?? password).finally(settled)
   }
 
-  const connecting = authenticating || status === 'connecting'
+  // inside the console the viewer never asks anyone to log in: it shows the connecting card, and when the
+  // session is gone the console closes it and shows its own start screen (app/consoleBridge.ts 'ended')
+  const connecting = embedded || authenticating || status === 'connecting'
   const passwordLogin = oauth.password_login_enabled !== false
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-background-floating/80" data-testid="connect">

@@ -1,4 +1,5 @@
-import logo from '@/assets/images/hands-mark.png'
+// the 4 KB Hands logo: Vite inlines it as a data URL, so it shows even when the page's session is gone
+import logo from '@/assets/images/hands-logo.png'
 import { cn } from '@/lib/utils'
 
 export function HandsBrand({ compact = false }: { compact?: boolean }) {
