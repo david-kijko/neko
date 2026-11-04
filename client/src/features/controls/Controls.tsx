@@ -6,12 +6,8 @@ import { useTranslation } from 'react-i18next'
 import {
   CursorIcon,
   KeyboardIcon,
-  LockIcon,
-  LockOpenIcon,
   MicrophoneIcon,
   MicrophoneSlashIcon,
-  PauseCircleIcon,
-  PlayCircleIcon,
   SpeakerHighIcon,
   SpeakerSlashIcon,
 } from '@phosphor-icons/react'
@@ -25,7 +21,7 @@ export function Controls() {
   const { t } = useTranslation()
   const { client, app } = useNeko()
   const actions = useActions()
-  const { admin, hosting, hosted, implicit, lockedControls, localLock, video, connected, canShareMedia } = useStore(
+  const { admin, hosting, hosted, implicit, lockedControls, video, connected, canShareMedia } = useStore(
     client.store,
     useShallow((s) => ({
       admin: selectIsAdmin(s),
@@ -33,7 +29,6 @@ export function Controls() {
       hosted: s.control.host_id !== null,
       implicit: s.settings.implicit_hosting,
       lockedControls: s.settings.locked_controls,
-      localLock: s.control.locked,
       video: s.video,
       connected: s.connection.status === 'connected',
       canShareMedia: !!selectSession(s)?.profile.can_share_media,
@@ -44,10 +39,8 @@ export function Controls() {
   const [micOn, setMicOn] = useState(false)
 
   const controlLocked = lockedControls && !admin
-  const locked = localLock && hosting
-  const { playable, playing, muted, volume } = video
+  const { playable, muted, volume } = video
   const micAllowed = hosting && canShareMedia && !!navigator.mediaDevices // none on plain http
-  const lockDisabled = !hosting || (implicit && controlLocked)
 
   // clicking the video without control shakes the keyboard icon as a hint
   useEffect(() => {
@@ -112,43 +105,6 @@ export function Controls() {
           <CursorIcon className={cn('size-[22px]', controlLocked && 'text-style-error/40')} />
         </li>
       )}
-      {(implicit || !controlLocked || hosting) && (
-        <li>
-          {/* the lock switch: the input, its track and its knob (a lock icon when it can be used) */}
-          <label
-            className="relative mx-[5px] block h-6 w-[42px] cursor-pointer"
-            title={hosting ? t(locked ? 'controls.unlock' : 'controls.lock') : ''}
-          >
-            <input
-              type="checkbox"
-              className="peer h-0 w-0 opacity-0"
-              aria-label={t(locked ? 'controls.unlock' : 'controls.lock')}
-              checked={locked}
-              disabled={lockDisabled}
-              onChange={(e) => (e.target.checked ? client.lock() : client.unlock())}
-            />
-            <span className="absolute inset-0 rounded-full bg-background-accent transition-all duration-200 peer-checked:bg-style-primary peer-focus-visible:outline-2 peer-focus-visible:outline-style-primary" />
-            <span
-              className={cn(
-                'absolute bottom-[3px] left-[3px] flex h-[18px] w-[18px] items-center justify-center rounded-full text-background-tertiary shadow-[0_2px_4px_rgba(0,0,0,0.3)] transition-all duration-300 peer-checked:translate-x-[18px]',
-                lockDisabled ? 'bg-text-normal/40' : 'bg-white',
-              )}
-            >
-              {!lockDisabled && (locked ? <LockIcon className="size-2" /> : <LockOpenIcon className="size-2" />)}
-            </span>
-          </label>
-        </li>
-      )}
-      <li>
-        <IconButton
-          variant="bar"
-          label={playing ? 'Pause' : 'Play'}
-          className={cn(!playable && 'text-style-error/60')}
-          onClick={() => playable && (playing ? client.pause() : client.play().catch(() => {}))}
-        >
-          {playing ? <PauseCircleIcon className="size-[22px]" /> : <PlayCircleIcon className="size-[22px]" />}
-        </IconButton>
-      </li>
       {micAllowed && (
         <li>
           <IconButton

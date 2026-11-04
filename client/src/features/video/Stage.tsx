@@ -28,7 +28,16 @@ import { useClipboardSync, canReadClipboard } from './useClipboardSync'
 const overlayClasses =
   'absolute inset-0 flex cursor-pointer items-center justify-center overflow-hidden rounded-none bg-black/20'
 
-export function Stage({ hideControls, extraControls }: { hideControls: boolean; extraControls: boolean }) {
+export function Stage({
+  hideControls,
+  extraControls,
+  consoleMode,
+}: {
+  hideControls: boolean
+  extraControls: boolean
+  // inside the Hands console: its header has fullscreen and control; the screen size follows the viewer
+  consoleMode: boolean
+}) {
   const { t } = useTranslation()
   const { client, overlay } = useNeko()
   const actions = useActions()
@@ -82,7 +91,7 @@ export function Stage({ hideControls, extraControls }: { hideControls: boolean; 
             )
           )}
         </div>
-        {!fullscreen && !hideControls && (
+        {!fullscreen && !hideControls && !consoleMode && (
           <ul className="absolute top-[15px] right-5">
             <li className="mb-2.5 last:mb-0">
               <IconButton variant="video" label="Fullscreen" onClick={requestFullscreen}>

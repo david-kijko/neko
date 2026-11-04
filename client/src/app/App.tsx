@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { useStore } from 'zustand'
 import { IconContext } from '@phosphor-icons/react'
 import { useShallow } from 'zustand/react/shallow'
@@ -15,6 +16,8 @@ import { RoomBar } from '@/layout/RoomBar'
 import { Stage } from '@/features/video/Stage'
 import { MemberMenu } from '@/features/members/MemberMenu'
 import { Connect } from '@/features/connect/Connect'
+import { embedded } from './embed'
+import { startConsoleBridge } from './consoleBridge'
 
 const params = new URL(location.href).searchParams
 const cast = !!params.get('cast')
@@ -22,10 +25,12 @@ const videoOnly = cast || !!params.get('embed')
 
 export function App() {
   const { t } = useTranslation()
-  const { client, app } = useNeko()
+  const neko = useNeko()
+  const { client, app } = neko
   const connected = useStore(client.store, (s) => s.connection.status === 'connected')
   const side = useStore(app, (s) => s.side)
   const memberMenu = useSlot('member.menu')
+  useEffect(() => startConsoleBridge(neko), [neko])
 
   if (!WebRTCTransport.supported()) {
     return (
@@ -39,6 +44,24 @@ export function App() {
           </div>
         </div>
       </div>
+    )
+  }
+
+  // inside the Hands console: the desktop fills the frame and the console's header has the controls; the
+  // chat opens as a drawer over the right side of the desktop, so the desktop keeps its size
+  if (embedded && !videoOnly) {
+    return (
+      <IconContext.Provider value={{ weight: 'fill' }}>
+        <div id="neko" className="absolute inset-0 overflow-hidden bg-black">
+          <div className="video-container absolute inset-0">
+            <Stage hideControls={false} extraControls={false} consoleMode />
+          </div>
+          <MemberMenu items={memberMenu} />
+          {side && <Side drawer />}
+          {!connected && <Connect />}
+          <Dialog />
+        </div>
+      </IconContext.Provider>
     )
   }
 
@@ -63,7 +86,7 @@ export function App() {
           )}
           {/* .video-container: index.html sizes it before the app renders (iOS) */}
           <div className="video-container flex max-w-full grow bg-black/40">
-            <Stage hideControls={cast} extraControls={videoOnly} />
+            <Stage hideControls={cast} extraControls={videoOnly} consoleMode={false} />
           </div>
           {!videoOnly && <RoomBar />}
         </main>

@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { useStore } from 'zustand'
 import { useTranslation } from 'react-i18next'
 import { SlidersHorizontalIcon } from '@phosphor-icons/react'
+import { cn } from '@/lib/utils'
 import { useApp } from '@/state/provider'
 import { remember } from '@/state/storage'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
@@ -19,21 +20,21 @@ const settingsTab: PluginTab = {
 }
 const always = () => true
 
-export function Side() {
+export function Side({ drawer = false }: { drawer?: boolean }) {
   const tabs = [...useSlot('side.tab'), settingsTab]
   useEffect(() => {
-    document.querySelector('aside')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-  }, [])
+    if (!drawer) document.querySelector('aside')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }, [drawer])
 
   return (
     <EachHook items={tabs} use={(tab) => tab.useVisible ?? always}>
-      {(visible) => <Panel tabs={tabs.filter((_, i) => visible[i])} />}
+      {(visible) => <Panel tabs={tabs.filter((_, i) => visible[i])} drawer={drawer} />}
     </EachHook>
   )
 }
 
 // the tabs available now
-function Panel({ tabs }: { tabs: PluginTab[] }) {
+function Panel({ tabs, drawer }: { tabs: PluginTab[]; drawer: boolean }) {
   const { t } = useTranslation()
   const app = useApp()
   const wanted = useStore(app, (s) => s.tab)
@@ -44,7 +45,12 @@ function Panel({ tabs }: { tabs: PluginTab[] }) {
   return (
     <Tabs value={tab} onValueChange={(id) => (app.setState({ tab: id }), remember('tab', id))} asChild>
       <aside
-        className="tablet:w-full tablet:portrait:h-[60vh] tablet:landscape:h-screen flex max-h-full w-side max-w-full shrink-0 flex-col border-l border-background-secondary bg-background-primary tablet:border-l-0 tablet:border-t"
+        className={cn(
+          'flex max-h-full max-w-full shrink-0 flex-col bg-background-primary',
+          drawer
+            ? 'absolute inset-y-0 right-0 z-20 w-[min(360px,100%)] border-l border-background-accent shadow-elevation-high'
+            : 'tablet:w-full tablet:portrait:h-[60vh] tablet:landscape:h-screen w-side border-l border-background-secondary tablet:border-t tablet:border-l-0',
+        )}
         data-testid="side"
       >
         <TabsList data-testid="tabs">

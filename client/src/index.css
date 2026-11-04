@@ -212,6 +212,13 @@
       height: auto;
     }
   }
+  /* inside the Hands console (app/embed.ts) the page is the desktop at every width: it never scrolls */
+  html[data-embed],
+  html[data-embed] body {
+    overflow: hidden;
+    width: 100vw;
+    height: 100vh;
+  }
   /* the stream's video element is the core's: no native controls */
   video::-webkit-media-controls {
     display: none !important;
